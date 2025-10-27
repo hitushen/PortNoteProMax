@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  portnote-promax:
+    image: hitushen/portnote-promax:2.0
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      PORTNOTE_HTTP_ADDR: "0.0.0.0:8080"
+      PORTNOTE_ADMIN_USER: "${PORTNOTE_ADMIN_USER:-admin}"
+      PORTNOTE_ADMIN_PASS: "${PORTNOTE_ADMIN_PASS:-admin123}"
+      PORTNOTE_SESSION_KEY: "${PORTNOTE_SESSION_KEY:-0123456789abcdef0123456789abcdef}"
+      PORTNOTE_CSRF_KEY: "${PORTNOTE_CSRF_KEY:-abcdef0123456789abcdef0123456789}"
+      PORTNOTE_SCAN_TIMEOUT: "${PORTNOTE_SCAN_TIMEOUT:-2s}"
+      PORTNOTE_SCAN_CONCURRENCY: "${PORTNOTE_SCAN_CONCURRENCY:-50}"
+    volumes:
+      - ./portnote-data:/app/data

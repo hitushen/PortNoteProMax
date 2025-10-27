@@ -1,0 +1,50 @@
+{{ define "login" }}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PortNoteProMax - Login</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="auth-body">
+  <div class="auth-shell">
+    <section class="auth-panel">
+      <div class="auth-panel-content">
+        <h1>PortNote<span>ProMax</span></h1>
+        <p>
+          一站式端口资产管理中心。记录 · 探测 · 追踪，帮助你快速掌握各主机的端口使用情况。
+        </p>
+        <ul>
+          <li>实时扫描，全栈指纹识别</li>
+          <li>卡片式可视化，信息一目了然</li>
+          <li>批量操作与安全防护策略</li>
+        </ul>
+      </div>
+    </section>
+    <section class="auth-form-card">
+      <div class="auth-form-header">
+        <h2>欢迎回来</h2>
+        <p>请输入账号密码继续使用 PortNoteProMax</p>
+      </div>
+      {{ if .Error }}
+      <div class="auth-error-banner">
+        <strong>登录失败</strong>
+        <span>账号或密码不正确，请重新输入。</span>
+      </div>
+      {{ end }}
+      <form method="POST" action="/login" class="auth-form">
+        {{ .CSRFField }}
+        <label class="auth-field">
+          <span>用户名</span>
+          <input type="text" name="username" autocomplete="username" required>
+        </label>
+        <label class="auth-field">
+          <span>密码</span>
+          <input type="password" name="password" autocomplete="current-password" required>
+        </label>
+        <button type="submit" class="btn-primary auth-submit">登录</button>
+      </form>
+    </section>
+  </div>
+</body>
+</html>{{ end }}

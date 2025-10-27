@@ -1,0 +1,103 @@
+{{ define "dashboard" }}<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PortNoteProMax</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+  <meta name="csrf-token" content="{{ .CSRFToken }}">
+</head>
+<body>
+  <div class="layout">
+    <header class="topbar">
+      <div class="logo">PortNote<span>ProMax</span></div>
+      <div class="user-info">
+        <span class="username">👋 {{ .Username }}</span>
+        <form method="POST" action="/logout">
+          {{ .CSRFField }}
+          <button type="submit" class="btn-secondary">退出</button>
+        </form>
+      </div>
+    </header>
+    <main id="app" class="app-root">
+      <aside class="sidebar">
+        <div class="section-header">
+          <h2>主机</h2>
+          <button id="btn-add-host" class="btn-icon" title="新增主机">＋</button>
+        </div>
+        <ul id="host-list" class="host-list"></ul>
+      </aside>
+      <section class="content">
+        <div class="content-header">
+          <div class="host-meta">
+            <h1 id="host-title">请选择主机</h1>
+            <p id="host-address"></p>
+          </div>
+          <div class="controls">
+            <button id="btn-scan-now" class="btn-primary">刷新端口</button>
+            <button id="btn-add-port" class="btn-secondary">新增端口</button>
+            <button id="btn-bulk-hide" class="btn-secondary">批量隐藏</button>
+            <button id="btn-bulk-delete" class="btn-secondary">批量删除</button>
+            <button id="btn-show-hidden" class="btn-secondary">查看隐藏</button>
+            <button id="btn-delete-host" class="btn-danger">删除主机</button>
+            <button id="btn-unused-port" class="btn-secondary">获取未使用端口</button>
+          </div>
+        </div>
+        <div class="filter-bar">
+          <div class="filter-left">
+            <div class="search-group">
+              <span class="search-icon">🔍</span>
+              <input id="port-search" type="search" placeholder="搜索端口或指纹">
+            </div>
+            <select id="port-sort" class="sort-select">
+              <option value="number:asc">端口号 ↑</option>
+              <option value="number:desc">端口号 ↓</option>
+              <option value="last_checked:desc">最近扫描 ↓</option>
+              <option value="last_checked:asc">最近扫描 ↑</option>
+              <option value="fingerprint:asc">指纹 A-Z</option>
+              <option value="fingerprint:desc">指纹 Z-A</option>
+            </select>
+          </div>
+          <div class="filter-right">
+            <div id="unused-port-display" class="unused-port-display hidden"></div>
+          </div>
+        </div>
+        <div id="port-section" class="port-section">
+          <p class="port-hint">仅展示扫描时检测到的已使用端口。如需更新，请点击上方“刷新端口”。</p>
+          <div class="port-tabs">
+            <button class="tab active" data-tab="visible">可见端口</button>
+            <button class="tab" data-tab="hidden">已隐藏</button>
+          </div>
+          <div id="port-grid-visible" class="port-grid"></div>
+          <div id="port-grid-hidden" class="port-grid hidden"></div>
+          <div class="pagination-bar">
+            <div class="pagination-left">
+              <button id="btn-prev-page" class="btn-secondary">上一页</button>
+              <span id="pagination-info"></span>
+              <button id="btn-next-page" class="btn-secondary">下一页</button>
+            </div>
+            <div class="pagination-right">
+              <label class="page-size-label">每页
+                <select id="page-size" class="sort-select">
+                  <option value="12">12</option>
+                  <option value="24" selected>24</option>
+                  <option value="48">48</option>
+                  <option value="96">96</option>
+                </select>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="modal-backdrop" class="modal-backdrop hidden">
+    <div class="modal" id="modal-container"></div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>{{ end }}
