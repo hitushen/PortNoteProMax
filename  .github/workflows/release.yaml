@@ -1,38 +1,26 @@
-name: goreleaser
+name: build-go-binary
 
 on:
-  push:
-    # run only against tags
-    tags:
-      - '*'
-
-permissions:
-  contents: write
-  # packages: write
-  # issues: write
+  release:
+    types: [created] # 表示在创建新的 Release 时触发
 
 jobs:
-  goreleaser:
+  build-go-binary:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin] # 需要打包的系统
+        goarch: [amd64, arm64] # 需要打包的架构
+        exclude: # 排除某些平台和架构
+          - goarch: arm64
+            goos: windows
     steps:
       - uses: actions/checkout@v3
+      - uses: wangyoucao577/go-release-action@v1.30
         with:
-          fetch-depth: 0
-      - run: git fetch --force --tags
-      - uses: actions/setup-go@v3
-        with:
-          go-version: '>=1.24.0'
-          cache: true
-      # More assembly might be required: Docker logins, GPG, etc. It all depends
-      # on your needs.
-      - uses: goreleaser/goreleaser-action@v4
-        with:
-          # either 'goreleaser' (default) or 'goreleaser-pro':
-          distribution: goreleaser
-          version: latest
-          args: release --clean
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Your GoReleaser Pro key, if you are using the 'goreleaser-pro'
-          # distribution:
-          # GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }} # 一个默认的变量，用来实现往 Release 中添加文件
+          goos: ${{ matrix.goos }}
+          goarch: ${{ matrix.goarch }}
+          goversion: 1.24.0 # 可以指定编译使用的 Golang 版本
+          binary_name: "PortNoteProMax" # 可以指定二进制文件的名称
+          extra_files: README.md config.dev.json # 需要包含的额外文件
